@@ -8,4 +8,6 @@ public interface RideRepository {
     void save(Ride ride);
 
     List<Ride> getPendingRides();
+
+    List<Ride> getAllRides();
 }

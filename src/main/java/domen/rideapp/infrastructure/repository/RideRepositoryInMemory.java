@@ -4,10 +4,7 @@ import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
 import domen.rideapp.domain.repository.RideRepository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RideRepositoryInMemory implements RideRepository {
@@ -23,5 +20,10 @@ public class RideRepositoryInMemory implements RideRepository {
         return rides.values().stream()
                 .filter(ride -> ride.getStatus() == RideStatus.PENDING)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Ride> getAllRides() {
+        return new ArrayList<>(rides.values());
     }
 }
