@@ -21,13 +21,17 @@ public class RideService {
         this.driverRepository = driverRepository;
     }
 
+    public List<Ride> getAllRides() {
+        return rideRepository.getAllRides();
+    }
+
     public void rideInitiation(String customer, String from, String to) {
         double cost = pricingService.getCost(from, to);
         Ride ride = new Ride(customer, new Localization(from, to), RideStatus.PENDING, cost);
         rideRepository.save(ride);
     }
 
-    public void assignDriversToRides() {
+    public int assignDriversToRides() {
         List<Ride> pendingRides = rideRepository.getPendingRides();
         List<Driver> availableDrivers = driverRepository.getAvailableDrivers();
         int numberOfRidesToFound = Math.min(pendingRides.size(), availableDrivers.size());
@@ -40,5 +44,6 @@ public class RideService {
             ride.setDriver(driver);
             rideRepository.save(ride);
         }
+        return numberOfRidesToFound;
     }
 }
