@@ -12,6 +12,6 @@ public record Driver(String id, String firstName, String lastName, DriverStatus 
     }
 
     public Driver copyWith(String firstName, String lastName, DriverStatus driverStatus) {
-        return new Driver(this.id, this.firstName, this.lastName, driverStatus);
+        return new Driver(this.id, firstName, lastName, driverStatus);
     }
 }
