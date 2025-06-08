@@ -92,9 +92,7 @@ public class RideControllerIntegrationTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Integer.class)
-                .value(response -> {
-                    Assertions.assertEquals(2, response);
-                });
+                .value(response -> Assertions.assertEquals(2, response));
     }
 
     @Test
