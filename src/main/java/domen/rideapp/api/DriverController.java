@@ -40,7 +40,7 @@ public class DriverController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Void> addDriver(@RequestBody AddDriverRequest request) {
         driverService.add(request.firstName(), request.lastName());
         return ResponseEntity.status(HttpStatus.CREATED).build();

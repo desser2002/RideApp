@@ -26,4 +26,9 @@ public class RideRepositoryInMemory implements RideRepository {
     public List<Ride> getAllRides() {
         return new ArrayList<>(rides.values());
     }
+
+    @Override
+    public void clear() {
+        rides.clear();
+    }
 }
