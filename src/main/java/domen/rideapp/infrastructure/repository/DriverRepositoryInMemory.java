@@ -31,4 +31,18 @@ public class DriverRepositoryInMemory implements DriverRepository {
     public Driver findDriverById(String id) {
         return drivers.get(UUID.fromString(id));
     }
+
+    @Override
+    public List<Driver> getAll() {
+        return drivers.values().stream().toList();
+    }
+
+    @Override
+    public Optional<Driver> getDriverById(String id) {
+        try {
+            return Optional.ofNullable(drivers.get(UUID.fromString(id)));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
 }
