@@ -17,4 +17,6 @@ public interface DriverRepository {
     List<Driver> getAll();
 
     Optional<Driver> getDriverById(String id);
+
+    void clear();
 }

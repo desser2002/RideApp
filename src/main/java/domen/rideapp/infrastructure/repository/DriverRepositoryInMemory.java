@@ -45,4 +45,9 @@ public class DriverRepositoryInMemory implements DriverRepository {
             return Optional.empty();
         }
     }
+
+    @Override
+    public void clear() {
+        drivers.clear();
+    }
 }

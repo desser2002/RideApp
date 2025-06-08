@@ -22,9 +22,10 @@ public class DriverService {
         return driverRepository.getDriverById(id);
     }
 
-    public void add(String firstName, String lastName) {
+    public Driver add(String firstName, String lastName) {
         Driver driver = new Driver(firstName, lastName);
         driverRepository.save(driver);
+        return driver;
     }
 
     public void remove(String id) {

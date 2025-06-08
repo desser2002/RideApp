@@ -4,6 +4,8 @@ import domen.rideapp.api.request.AddDriverRequest;
 import domen.rideapp.api.request.UpdateDriverRequest;
 import domen.rideapp.api.request.UpdateDriverStatusRequest;
 import domen.rideapp.api.response.DriverResponse;
+import domen.rideapp.domain.model.Driver;
+import domen.rideapp.domain.model.DriverStatus;
 import domen.rideapp.domain.service.DriverService;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
@@ -41,9 +43,10 @@ public class DriverController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Void> addDriver(@RequestBody AddDriverRequest request) {
-        driverService.add(request.firstName(), request.lastName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<DriverResponse> addDriver(@RequestBody AddDriverRequest request) {
+        Driver driver = driverService.add(request.firstName(), request.lastName());
+        DriverResponse driverResponse = conversionService.convert(driver, DriverResponse.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(driverResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -61,10 +64,10 @@ public class DriverController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateDriverStatus(@PathVariable String id,
                                                    @RequestBody UpdateDriverStatusRequest request) {
-        if (request.status() == null) {
+        if (request.driverStatus() == null) {
             return ResponseEntity.badRequest().build();
         }
-        driverService.updateStatus(id, request.status());
+        driverService.updateStatus(id, DriverStatus.valueOf(request.driverStatus()));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
