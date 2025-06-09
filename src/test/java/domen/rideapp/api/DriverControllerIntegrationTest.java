@@ -61,6 +61,7 @@ public class DriverControllerIntegrationTest {
 
     @Test
     void shouldGetDriverById() {
+        //given
         AddDriverRequest request1 = new AddDriverRequest("Firstname", "Lastname");
         AddDriverRequest request2 = new AddDriverRequest("Firstname2", "Lastname2");
 
@@ -68,6 +69,8 @@ public class DriverControllerIntegrationTest {
         DriverResponse driverResponse = createDriverAndReturn(request2);
 
         Assertions.assertNotNull(driverResponse);
+
+        //when then
         getDriverById(driverResponse.id())
                 .expectStatus().isOk()
                 .expectBody(DriverResponse.class)
@@ -95,11 +98,13 @@ public class DriverControllerIntegrationTest {
 
     @Test
     void shouldUpdateDriver() {
+        //given
         AddDriverRequest addDriverRequest = new AddDriverRequest("Firstname", "Lastname");
         DriverResponse driverResponse = createDriverAndReturn(addDriverRequest);
         Assertions.assertNotNull(driverResponse);
         UpdateDriverRequest updateDriverRequest =
                 new UpdateDriverRequest("New Firstname", "New Lastname", DriverStatus.IN_RIDE.toString());
+        // when then
         updateDriver(driverResponse.id(), updateDriverRequest);
         getDriverById(driverResponse.id())
                 .expectStatus().isOk()
@@ -113,9 +118,11 @@ public class DriverControllerIntegrationTest {
 
     @Test
     void shouldUpdateDriverStatus() {
+        //given
         AddDriverRequest addDriverRequest = new AddDriverRequest("Firstname", "Lastname");
         DriverResponse driverResponse = createDriverAndReturn(addDriverRequest);
         Assertions.assertNotNull(driverResponse);
+        //when then
         UpdateDriverStatusRequest updateDriverStatusRequest =
                 new UpdateDriverStatusRequest(DriverStatus.IN_RIDE.toString());
         updateDriverStatus(driverResponse.id(), updateDriverStatusRequest);
