@@ -12,8 +12,6 @@ public interface DriverRepository {
 
     void remove(String driver);
 
-    Driver findDriverById(String id);
-
     List<Driver> getAll();
 
     Optional<Driver> getDriverById(String id);

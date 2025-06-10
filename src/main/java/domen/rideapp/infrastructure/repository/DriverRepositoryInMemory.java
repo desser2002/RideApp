@@ -28,11 +28,6 @@ public class DriverRepositoryInMemory implements DriverRepository {
     }
 
     @Override
-    public Driver findDriverById(String id) {
-        return drivers.get(UUID.fromString(id));
-    }
-
-    @Override
     public List<Driver> getAll() {
         return drivers.values().stream().toList();
     }
