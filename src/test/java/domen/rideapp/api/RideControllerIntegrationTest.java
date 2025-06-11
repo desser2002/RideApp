@@ -5,6 +5,7 @@ import domen.rideapp.api.request.InitRideRequest;
 import domen.rideapp.api.response.RideResponse;
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
+import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +25,13 @@ public class RideControllerIntegrationTest {
     private WebTestClient webTestClient;
     @Autowired
     private RideRepository rideRepository;
+    @Autowired
+    private DriverRepository driverRepository;
 
     @BeforeEach
     void cleanUp() {
         rideRepository.clear();
+        driverRepository.clear();
     }
 
     @Test
