@@ -1,4 +1,9 @@
 package domen.rideapp.api.request;
 
-public record InitRideRequest(String customer, String from, String to) {
-}
+import jakarta.validation.constraints.NotBlank;
+
+public record InitRideRequest(
+        @NotBlank String customer,
+        @NotBlank String from,
+        @NotBlank String to
+) {}

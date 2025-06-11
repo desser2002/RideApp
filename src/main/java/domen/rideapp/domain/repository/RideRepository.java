@@ -10,4 +10,6 @@ public interface RideRepository {
     List<Ride> getPendingRides();
 
     List<Ride> getAllRides();
+
+    void clear();
 }

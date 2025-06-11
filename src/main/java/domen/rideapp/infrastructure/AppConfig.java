@@ -2,6 +2,7 @@ package domen.rideapp.infrastructure;
 
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
+import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.PricingService;
 import domen.rideapp.domain.service.RideService;
 import domen.rideapp.infrastructure.repository.DriverRepositoryInMemory;
@@ -31,5 +32,10 @@ public class AppConfig {
                             DriverRepository driverRepository,
                             RideRepository rideRepository) {
         return new RideService(pricingService, rideRepository, driverRepository);
+    }
+
+    @Bean
+    DriverService driverService(DriverRepository repository) {
+        return new DriverService(repository);
     }
 }

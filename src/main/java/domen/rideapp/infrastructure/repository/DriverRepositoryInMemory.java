@@ -21,4 +21,28 @@ public class DriverRepositoryInMemory implements DriverRepository {
     public void save(Driver driver) {
         drivers.put(UUID.fromString(driver.id()), driver);
     }
+
+    @Override
+    public void remove(String id) {
+        drivers.remove(UUID.fromString(id));
+    }
+
+    @Override
+    public List<Driver> getAll() {
+        return drivers.values().stream().toList();
+    }
+
+    @Override
+    public Optional<Driver> getDriverById(String id) {
+        try {
+            return Optional.ofNullable(drivers.get(UUID.fromString(id)));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void clear() {
+        drivers.clear();
+    }
 }
