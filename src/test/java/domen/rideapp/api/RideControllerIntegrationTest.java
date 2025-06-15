@@ -60,8 +60,8 @@ public class RideControllerIntegrationTest {
         //given
         InitRideRequest request = new InitRideRequest(
                 "customer1",
-                new GeoPoint(52.2297, 21.0122),  // Warsaw
-                new GeoPoint(50.0647, 19.9450)   // Kraków
+                new GeoPoint(52.2297, 21.0122),
+                new GeoPoint(50.0647, 19.9450)
         );
         //when then
         createRide(request).expectStatus().isCreated();
