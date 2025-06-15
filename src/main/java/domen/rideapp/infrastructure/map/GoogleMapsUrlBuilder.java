@@ -2,9 +2,7 @@ package domen.rideapp.infrastructure.map;
 
 import domen.rideapp.domain.model.Localization;
 import domen.rideapp.infrastructure.GoogleMapsConfig;
-import org.springframework.stereotype.Component;
 
-@Component
 public class GoogleMapsUrlBuilder {
     private final GoogleMapsConfig config;
 

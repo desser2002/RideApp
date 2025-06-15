@@ -8,10 +8,12 @@ import domen.rideapp.domain.service.PricingService;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Optional;
 
 @TestConfiguration
+@Profile("test")
 public class TestBeansConfig {
     @Bean
     public MapService mapService() {
