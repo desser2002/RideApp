@@ -8,6 +8,8 @@ import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.PricingRepository;
 import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.service.MapService;
+import domen.rideapp.domain.service.PricingService;
+import domen.rideapp.infrastructure.pricing.CustomPricingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,11 @@ public class RideControllerIntegrationTest {
         @Bean
         public PricingRepository pricingRepository() {
             return () -> Optional.of(new PricingConfig(2.0, 1.0, 5.0));
+        }
+
+        @Bean
+        public PricingService pricingService(MapService mapService, PricingRepository pricingRepository) {
+            return new CustomPricingService(mapService, pricingRepository);
         }
     }
 
