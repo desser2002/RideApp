@@ -26,7 +26,6 @@ public class GoogleMapsClient {
                     .uri(URI.create(url))
                     .GET()
                     .build();
-            System.out.println(request);
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             return response.body();
         } catch (Exception e) {
