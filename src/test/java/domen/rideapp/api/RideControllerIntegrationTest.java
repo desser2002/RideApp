@@ -8,9 +8,11 @@ import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
+import domen.rideapp.infrastructure.pricing.CustomPricingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Comparator;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
@@ -43,9 +48,10 @@ public class RideControllerIntegrationTest {
                 new InitRideRequest("customer2", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
                 new InitRideRequest("customer3", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450))
         );
+        CustomPricingService mock = Mockito.mock(CustomPricingService.class);
+        when(mock.getCost(any())).thenReturn(123.45);
 
         requests.forEach(request -> createRide(request).expectStatus().isCreated());
-
         //when then
         getAllRides().expectStatus().isOk()
                 .expectBodyList(RideResponse.class)
@@ -63,6 +69,8 @@ public class RideControllerIntegrationTest {
                 new GeoPoint(52.2297, 21.0122),
                 new GeoPoint(50.0647, 19.9450)
         );
+        CustomPricingService mock = Mockito.mock(CustomPricingService.class);
+        when(mock.getCost(any())).thenReturn(123.45);
         //when then
         createRide(request).expectStatus().isCreated();
         List<Ride> rides = rideRepository.getAllRides();
@@ -81,6 +89,8 @@ public class RideControllerIntegrationTest {
                 new InitRideRequest("customer2", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
                 new InitRideRequest("customer3", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450))
         );
+        CustomPricingService mock = Mockito.mock(CustomPricingService.class);
+        when(mock.getCost(any())).thenReturn(123.45);
 
         requests.forEach(request -> createRide(request).expectStatus().isCreated());
 
