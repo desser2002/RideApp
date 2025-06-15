@@ -3,26 +3,24 @@ package domen.rideapp.api;
 import domen.rideapp.api.request.AddDriverRequest;
 import domen.rideapp.api.request.InitRideRequest;
 import domen.rideapp.api.response.RideResponse;
-import domen.rideapp.domain.model.GeoPoint;
-import domen.rideapp.domain.model.Ride;
-import domen.rideapp.domain.model.RideStatus;
+import domen.rideapp.domain.model.*;
 import domen.rideapp.domain.repository.DriverRepository;
+import domen.rideapp.domain.repository.PricingRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.infrastructure.pricing.CustomPricingService;
+import domen.rideapp.domain.service.MapService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Comparator;
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
@@ -40,6 +38,19 @@ public class RideControllerIntegrationTest {
         driverRepository.clear();
     }
 
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public MapService mapService() {
+            return localization -> Optional.of(new RouteEstimate(10.0, 15));
+        }
+
+        @Bean
+        public PricingRepository pricingRepository() {
+            return () -> Optional.of(new PricingConfig(2.0, 1.0, 5.0));
+        }
+    }
+
     @Test
     void shouldGetAllRides() {
         //given
@@ -48,8 +59,6 @@ public class RideControllerIntegrationTest {
                 new InitRideRequest("customer2", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
                 new InitRideRequest("customer3", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450))
         );
-        CustomPricingService mock = Mockito.mock(CustomPricingService.class);
-        when(mock.getCost(any())).thenReturn(123.45);
 
         requests.forEach(request -> createRide(request).expectStatus().isCreated());
         //when then
@@ -69,8 +78,6 @@ public class RideControllerIntegrationTest {
                 new GeoPoint(52.2297, 21.0122),
                 new GeoPoint(50.0647, 19.9450)
         );
-        CustomPricingService mock = Mockito.mock(CustomPricingService.class);
-        when(mock.getCost(any())).thenReturn(123.45);
         //when then
         createRide(request).expectStatus().isCreated();
         List<Ride> rides = rideRepository.getAllRides();
@@ -89,8 +96,6 @@ public class RideControllerIntegrationTest {
                 new InitRideRequest("customer2", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
                 new InitRideRequest("customer3", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450))
         );
-        CustomPricingService mock = Mockito.mock(CustomPricingService.class);
-        when(mock.getCost(any())).thenReturn(123.45);
 
         requests.forEach(request -> createRide(request).expectStatus().isCreated());
 
