@@ -1,6 +1,7 @@
 package domen.rideapp.infrastructure;
 
 import domen.rideapp.domain.repository.DriverRepository;
+import domen.rideapp.domain.repository.PricingRepository;
 import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.MapService;
@@ -11,6 +12,7 @@ import domen.rideapp.infrastructure.map.GoogleMapsService;
 import domen.rideapp.infrastructure.map.GoogleMapsUrlBuilder;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
 import domen.rideapp.infrastructure.repository.DriverRepositoryInMemory;
+import domen.rideapp.infrastructure.repository.InMemoryPricingConfigRepository;
 import domen.rideapp.infrastructure.repository.RideRepositoryInMemory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +24,18 @@ import java.net.http.HttpClient;
 @Configuration
 public class AppConfig {
     @Bean
-    PricingService pricingService(MapService mapService) {
-        return new CustomPricingService(mapService);
+    PricingService pricingService(MapService mapService, PricingRepository pricingRepository) {
+        return new CustomPricingService(mapService, pricingRepository);
     }
 
     @Bean
     DriverRepositoryInMemory driverRepository() {
         return new DriverRepositoryInMemory();
+    }
+
+    @Bean
+    PricingRepository pricingRepository() {
+        return new InMemoryPricingConfigRepository();
     }
 
     @Bean
