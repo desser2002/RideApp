@@ -1,7 +1,5 @@
 package domen.rideapp.domain.model;
 
-import domen.rideapp.domain.service.Localization;
-
 import java.util.UUID;
 
 public class Ride {
