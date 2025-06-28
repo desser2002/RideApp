@@ -1,7 +1,8 @@
 package domen.rideapp.domain.service;
 
-public class PricingService {
-    public double getCost(String from, String to) {
-        return 0;
-    }
+import domen.rideapp.domain.model.Localization;
+import domen.rideapp.domain.model.Price;
+
+public interface PricingService {
+    Price getCost(Localization localization);
 }

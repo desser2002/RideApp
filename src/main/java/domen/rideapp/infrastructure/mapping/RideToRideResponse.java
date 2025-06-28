@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class RideToRideResponse implements Converter<Ride, RideResponse> {
     @Override
     public RideResponse convert(Ride source) {
-        return new RideResponse(source.getId(), source.getCustomer(), source.getStatus().name(), source.getCost());
+        return new RideResponse(source.getId(), source.getCustomer(), source.getStatus().name(),
+                source.getPrice().toString());
     }
 }

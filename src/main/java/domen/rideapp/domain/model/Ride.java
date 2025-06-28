@@ -1,32 +1,30 @@
 package domen.rideapp.domain.model;
 
-import domen.rideapp.domain.service.Localization;
-
 import java.util.UUID;
 
 public class Ride {
-    private String id;
+    private final String id;
 
     public String getId() {
         return id;
     }
 
-    private String customer;
-    private Localization localization;
+    private final String customer;
+    private final Localization localization;
     private RideStatus status;
-    private double cost;
+    private final Price price;
     private Driver driver;
 
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
 
-    public Ride(String customer, Localization localization, RideStatus status, double cost) {
+    public Ride(String customer, Localization localization, RideStatus status, Price price) {
         this.id = UUID.randomUUID().toString();
         this.customer = customer;
         this.localization = localization;
         this.status = status;
-        this.cost = cost;
+        this.price = price;
     }
 
     public void setStatus(RideStatus status) {
@@ -45,8 +43,8 @@ public class Ride {
         return status;
     }
 
-    public double getCost() {
-        return cost;
+    public Price getPrice() {
+        return price;
     }
 
     public Driver getDriver() {
