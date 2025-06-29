@@ -5,6 +5,7 @@ import domen.rideapp.infrastructure.map.GoogleMapsClient;
 import domen.rideapp.infrastructure.map.GoogleMapsService;
 import domen.rideapp.infrastructure.map.GoogleMapsUrlBuilder;
 import domen.rideapp.infrastructure.mapping.MapService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
@@ -29,18 +30,19 @@ public class GoogleMapsConfiguration {
     }
 
     @Bean
-    MapService googleMapsService(FeatureFlagsConfig featureFlagsConfig,
-                                 GoogleMapsClient client,
+    @ConditionalOnProperty(name = "feature.googleMaps.enabled", havingValue = "true")
+    MapService googleMapsService(GoogleMapsClient client,
                                  ConversionService conversionService,
                                  GoogleMapsConfig config) {
-        if (!featureFlagsConfig.googleMapsEnabled()) {
-            return new DummyMapService();
-        }
-
         if (config.apiKey() == null || config.apiKey().isBlank()) {
             throw new IllegalStateException("Google Maps API key must be set in production.");
         }
-
         return new GoogleMapsService(client, conversionService);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "feature.googleMaps.enabled", havingValue = "false", matchIfMissing = true)
+    MapService dummyMapService() {
+        return new DummyMapService();
     }
 }
