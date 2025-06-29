@@ -1,5 +1,6 @@
 package domen.rideapp.infrastructure;
 
+import domen.rideapp.infrastructure.map.DummyMapService;
 import domen.rideapp.infrastructure.map.GoogleMapsClient;
 import domen.rideapp.infrastructure.map.GoogleMapsService;
 import domen.rideapp.infrastructure.map.GoogleMapsUrlBuilder;
@@ -28,12 +29,18 @@ public class GoogleMapsConfiguration {
     }
 
     @Bean
-    MapService googleMapsServiceProd(GoogleMapsClient client,
-                                     ConversionService conversionService,
-                                     GoogleMapsConfig config) {
+    MapService googleMapsService(FeatureFlagsConfig featureFlagsConfig,
+                                 GoogleMapsClient client,
+                                 ConversionService conversionService,
+                                 GoogleMapsConfig config) {
+        if (!featureFlagsConfig.googleMapsEnabled()) {
+            return new DummyMapService();
+        }
+
         if (config.apiKey() == null || config.apiKey().isBlank()) {
             throw new IllegalStateException("Google Maps API key must be set in production.");
         }
+
         return new GoogleMapsService(client, conversionService);
     }
 }
