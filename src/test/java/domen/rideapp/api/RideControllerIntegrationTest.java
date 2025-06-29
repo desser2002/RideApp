@@ -1,8 +1,10 @@
 package domen.rideapp.api;
 
+import domen.rideapp.GoogleMapsWireMockTestConfig;
 import domen.rideapp.api.request.AddDriverRequest;
 import domen.rideapp.api.request.InitRideRequest;
 import domen.rideapp.api.response.RideResponse;
+import domen.rideapp.domain.model.GeoPoint;
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
 import domen.rideapp.domain.repository.DriverRepository;
@@ -13,12 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Comparator;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(GoogleMapsWireMockTestConfig.class)
 @AutoConfigureWebTestClient
 public class RideControllerIntegrationTest {
     @Autowired
@@ -38,13 +42,12 @@ public class RideControllerIntegrationTest {
     void shouldGetAllRides() {
         //given
         List<InitRideRequest> requests = List.of(
-                new InitRideRequest("customer1", "from", "to"),
-                new InitRideRequest("customer2", "from", "to"),
-                new InitRideRequest("customer3", "from", "to")
+                new InitRideRequest("customer1", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
+                new InitRideRequest("customer2", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
+                new InitRideRequest("customer3", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450))
         );
 
         requests.forEach(request -> createRide(request).expectStatus().isCreated());
-
         //when then
         getAllRides().expectStatus().isOk()
                 .expectBodyList(RideResponse.class)
@@ -57,7 +60,11 @@ public class RideControllerIntegrationTest {
     @Test
     void shouldInitRide() {
         //given
-        InitRideRequest request = new InitRideRequest("customer1", "from", "to");
+        InitRideRequest request = new InitRideRequest(
+                "customer1",
+                new GeoPoint(52.2297, 21.0122),
+                new GeoPoint(50.0647, 19.9450)
+        );
         //when then
         createRide(request).expectStatus().isCreated();
         List<Ride> rides = rideRepository.getAllRides();
@@ -72,9 +79,9 @@ public class RideControllerIntegrationTest {
     void shouldAssignDriversToRide() {
         //given
         List<InitRideRequest> requests = List.of(
-                new InitRideRequest("customer1", "from", "to"),
-                new InitRideRequest("customer2", "from", "to"),
-                new InitRideRequest("customer3", "from", "to")
+                new InitRideRequest("customer1", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
+                new InitRideRequest("customer2", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450)),
+                new InitRideRequest("customer3", new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450))
         );
 
         requests.forEach(request -> createRide(request).expectStatus().isCreated());
@@ -94,8 +101,8 @@ public class RideControllerIntegrationTest {
     @Test
     void shouldReturnBadRequest() {
         //given
-        InitRideRequest request = new InitRideRequest("", "", "");
-
+        InitRideRequest request = new InitRideRequest("",
+                new GeoPoint(52.2297, 21.0122), new GeoPoint(50.0647, 19.9450));
         //when then
         createRide(request).expectStatus().isBadRequest();
     }

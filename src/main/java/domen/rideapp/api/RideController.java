@@ -2,6 +2,7 @@ package domen.rideapp.api;
 
 import domen.rideapp.api.request.InitRideRequest;
 import domen.rideapp.api.response.RideResponse;
+import domen.rideapp.domain.model.Localization;
 import domen.rideapp.domain.service.RideService;
 import jakarta.validation.Valid;
 import org.springframework.core.convert.ConversionService;
@@ -24,7 +25,7 @@ public class RideController {
 
     @PostMapping("/init")
     public ResponseEntity<Void> initRide(@Valid @RequestBody InitRideRequest request) {
-        rideService.rideInitiation(request.customer(), request.from(), request.to());
+        rideService.rideInitiation(request.customer(), new Localization(request.from(), request.to()));
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

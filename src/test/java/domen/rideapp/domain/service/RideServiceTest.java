@@ -1,9 +1,6 @@
 package domen.rideapp.domain.service;
 
-import domen.rideapp.domain.model.Driver;
-import domen.rideapp.domain.model.DriverStatus;
-import domen.rideapp.domain.model.Ride;
-import domen.rideapp.domain.model.RideStatus;
+import domen.rideapp.domain.model.*;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
 import org.junit.jupiter.api.Test;
@@ -35,10 +32,11 @@ class RideServiceTest {
     void shouldAddRide() {
         //given
         String customer = "Customer";
-        String from = "First city";
-        String to = "Second city";
+        GeoPoint from = new GeoPoint(52.2297, 21.0122);
+        GeoPoint to = new GeoPoint(51.1079, 17.0385);
+        Localization localization = new Localization(from, to);
         //when
-        rideService.rideInitiation(customer, from, to);
+        rideService.rideInitiation(customer, localization);
         //then
         ArgumentCaptor<Ride> argumentCaptor = ArgumentCaptor.forClass(Ride.class);
         verify(rideRepository).save(argumentCaptor.capture());
@@ -47,15 +45,18 @@ class RideServiceTest {
         assertEquals(from, ride.getLocalization().from());
         assertEquals(to, ride.getLocalization().to());
         assertNull(ride.getDriver());
-        verify(pricingService).getCost(from, to);
+        verify(pricingService).getCost(localization);
     }
 
     @Test
     void shouldAssignRidesWhenRidesAmountIsMoreThenDrivers() {
         //given
-        Ride ride1 = spy(new Ride("Customer1", new Localization("from", "to"), RideStatus.PENDING, 12.01));
-        Ride ride2 = spy(new Ride("Customer2", new Localization("from", "to"), RideStatus.PENDING, 12.02));
-        Ride ride3 = spy(new Ride("Customer3", new Localization("from", "to"), RideStatus.PENDING, 12.03));
+        GeoPoint from = new GeoPoint(52.2297, 21.0122);
+        GeoPoint to = new GeoPoint(51.1079, 17.0385);
+        Localization localization = new Localization(from, to);
+        Ride ride1 = spy(new Ride("Customer1", localization, RideStatus.PENDING, new Price("12.01 PLN")));
+        Ride ride2 = spy(new Ride("Customer2", localization, RideStatus.PENDING, new Price("12.02 PLN")));
+        Ride ride3 = spy(new Ride("Customer3", localization, RideStatus.PENDING, new Price("12.03 PLN")));
         List<Ride> rides = new ArrayList<>(List.of(ride1, ride2, ride3));
         Driver driver1 = spy(new Driver(UUID.randomUUID().toString(), "Jon", "Latitude", DriverStatus.AVAILABLE));
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
@@ -77,8 +78,11 @@ class RideServiceTest {
     @Test
     void shouldAssignRidesWhenRidesAmountIsLessThenDrivers() {
         //given
-        Ride ride1 = spy(new Ride("Customer1", new Localization("from", "to"), RideStatus.PENDING, 12.01));
-        Ride ride2 = spy(new Ride("Customer2", new Localization("from", "to"), RideStatus.PENDING, 12.02));
+        GeoPoint from = new GeoPoint(52.2297, 21.0122);
+        GeoPoint to = new GeoPoint(51.1079, 17.0385);
+        Localization localization = new Localization(from, to);
+        Ride ride1 = spy(new Ride("Customer1", localization, RideStatus.PENDING, new Price("12.01 PLN")));
+        Ride ride2 = spy(new Ride("Customer2", localization, RideStatus.PENDING, new Price("12.02 PLN")));
         List<Ride> rides = new ArrayList<>(List.of(ride1, ride2));
         Driver driver1 = spy(new Driver(UUID.randomUUID().toString(), "Jon", "Latitude", DriverStatus.AVAILABLE));
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
@@ -101,9 +105,12 @@ class RideServiceTest {
     @Test
     void shouldAssignRidesWhenRidesAmountIsEqualsThenDrivers() {
         //given
-        Ride ride1 = spy(new Ride("Customer1", new Localization("from", "to"), RideStatus.PENDING, 12.01));
-        Ride ride2 = spy(new Ride("Customer2", new Localization("from", "to"), RideStatus.PENDING, 12.02));
-        Ride ride3 = spy(new Ride("Customer3", new Localization("from", "to"), RideStatus.PENDING, 12.03));
+        GeoPoint from = new GeoPoint(52.2297, 21.0122);
+        GeoPoint to = new GeoPoint(51.1079, 17.0385);
+        Localization localization = new Localization(from, to);
+        Ride ride1 = spy(new Ride("Customer1", localization, RideStatus.PENDING, new Price("12.01 PLN")));
+        Ride ride2 = spy(new Ride("Customer2", localization, RideStatus.PENDING, new Price("12.02 PLN")));
+        Ride ride3 = spy(new Ride("Customer3", localization, RideStatus.PENDING, new Price("12.03 PLN")));
         List<Ride> rides = new ArrayList<>(List.of(ride1, ride2, ride3));
         Driver driver1 = spy(new Driver(UUID.randomUUID().toString(), "Jon", "Latitude", DriverStatus.AVAILABLE));
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
