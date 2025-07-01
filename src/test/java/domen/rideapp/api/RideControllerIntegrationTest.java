@@ -1,6 +1,7 @@
 package domen.rideapp.api;
 
 import domen.rideapp.GoogleMapsWireMockTestConfig;
+import domen.rideapp.TemporaryRideStoreTestConfig;
 import domen.rideapp.api.request.AddDriverRequest;
 import domen.rideapp.api.request.InitRideRequest;
 import domen.rideapp.api.response.RideResponse;
@@ -9,6 +10,7 @@ import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
+import domen.rideapp.domain.repository.RideTemporaryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(GoogleMapsWireMockTestConfig.class)
+@Import({GoogleMapsWireMockTestConfig.class, TemporaryRideStoreTestConfig.class})
 @AutoConfigureWebTestClient
 public class RideControllerIntegrationTest {
     @Autowired
@@ -31,11 +33,14 @@ public class RideControllerIntegrationTest {
     private RideRepository rideRepository;
     @Autowired
     private DriverRepository driverRepository;
+    @Autowired
+    private RideTemporaryRepository rideTemporaryRepository;
 
     @BeforeEach
     void cleanUp() {
         rideRepository.clear();
         driverRepository.clear();
+        rideTemporaryRepository.clear();
     }
 
     @Test
@@ -67,12 +72,19 @@ public class RideControllerIntegrationTest {
         );
         //when then
         createRide(request).expectStatus().isCreated();
-        List<Ride> rides = rideRepository.getAllRides();
+        List<Ride> rides = rideTemporaryRepository.getPendingRides();
         Assertions.assertEquals(1, rides.size());
         Assertions.assertEquals(request.customer(), rides.getFirst().getCustomer());
         Assertions.assertEquals(request.from(), rides.getFirst().getLocalization().from());
         Assertions.assertEquals(request.to(), rides.getFirst().getLocalization().to());
         Assertions.assertEquals(RideStatus.PENDING, rides.getFirst().getStatus());
+
+        List<Ride> ridesAtRepo = rideRepository.getPendingRides();
+        Assertions.assertEquals(1, ridesAtRepo.size());
+        Assertions.assertEquals(request.customer(), ridesAtRepo.getFirst().getCustomer());
+        Assertions.assertEquals(request.from(), ridesAtRepo.getFirst().getLocalization().from());
+        Assertions.assertEquals(request.to(), ridesAtRepo.getFirst().getLocalization().to());
+        Assertions.assertEquals(RideStatus.PENDING, ridesAtRepo.getFirst().getStatus());
     }
 
     @Test

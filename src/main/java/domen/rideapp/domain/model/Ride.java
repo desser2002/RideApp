@@ -1,5 +1,8 @@
 package domen.rideapp.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 public class Ride {
@@ -25,6 +28,23 @@ public class Ride {
         this.localization = localization;
         this.status = status;
         this.price = price;
+    }
+
+    @JsonCreator
+    public Ride(
+            @JsonProperty("id") String id,
+            @JsonProperty("customer") String customer,
+            @JsonProperty("localization") Localization localization,
+            @JsonProperty("status") RideStatus status,
+            @JsonProperty("price") Price price,
+            @JsonProperty("driver") Driver driver
+    ) {
+        this.id = id != null ? id : UUID.randomUUID().toString();
+        this.customer = customer;
+        this.localization = localization;
+        this.status = status;
+        this.price = price;
+        this.driver = driver;
     }
 
     public void setStatus(RideStatus status) {
