@@ -3,7 +3,7 @@ package domen.rideapp.domain.service;
 import domen.rideapp.domain.model.*;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,33 +12,31 @@ public class RideService {
     private final PricingService pricingService;
     private final RideRepository rideRepository;
     private final DriverRepository driverRepository;
-    private final RideTemporaryRepository rideTemporaryRepository;
+    private final RideCacheRepository rideCacheRepository;
 
     public RideService(PricingService pricingService,
                        RideRepository rideRepository, DriverRepository driverRepository,
-                       RideTemporaryRepository rideTemporaryRepository) {
+                       RideCacheRepository rideCacheRepository) {
         this.pricingService = pricingService;
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
-        this.rideTemporaryRepository = rideTemporaryRepository;
+        this.rideCacheRepository = rideCacheRepository;
     }
 
     public List<Ride> getAllRides() {
-        List<Ride> allRides = new ArrayList<>();
-        allRides.addAll(rideRepository.getAllRides());
-        return allRides;
+        return new ArrayList<>(rideRepository.getAllRides());
     }
 
     public String rideInitiation(String customer, Localization localization) {
         Price cost = pricingService.getCost(localization);
         Ride ride = new Ride(customer, localization, RideStatus.PENDING, cost);
-        rideTemporaryRepository.save(ride);
+        rideCacheRepository.save(ride);
         rideRepository.save(ride);
         return ride.getId();
     }
 
     public int assignDriversToRides() {
-        List<Ride> pendingRides = rideTemporaryRepository.getPendingRides();
+        List<Ride> pendingRides = rideCacheRepository.getPendingRides();
         List<Driver> availableDrivers = driverRepository.getAvailableDrivers();
         int numberOfRidesToFound = Math.min(pendingRides.size(), availableDrivers.size());
         List<Ride> ridesToAssign = pendingRides.subList(0, numberOfRidesToFound);
@@ -50,7 +48,7 @@ public class RideService {
             driverRepository.save(driver);
             ride.setDriver(driver);
             rideRepository.save(ride);
-            rideTemporaryRepository.delete(ride.getId());
+            rideCacheRepository.delete(ride.getId());
         }
         return numberOfRidesToFound;
     }

@@ -1,14 +1,14 @@
 package domen.rideapp.infrastructure.repository;
 
 import domen.rideapp.domain.model.Ride;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryRideTemporaryRepository implements RideTemporaryRepository {
+public class InMemoryRideCacheRepository implements RideCacheRepository {
     private final Map<String, Ride> rides = new HashMap<>();
 
     @Override
@@ -26,8 +26,9 @@ public class InMemoryRideTemporaryRepository implements RideTemporaryRepository 
     @Override
     public void deleteBatch(List<String> assignedRidesIds) {
         if (assignedRidesIds == null) {
-            rides.forEach(rides::remove);
+            return;
         }
+        assignedRidesIds.forEach(rides::remove);
     }
 
     @Override

@@ -4,7 +4,7 @@ import domen.rideapp.domain.model.Ride;
 
 import java.util.List;
 
-public interface RideTemporaryRepository {
+public interface RideCacheRepository {
     void save(Ride ride);
 
     List<Ride> getPendingRides();

@@ -1,19 +1,19 @@
 package domen.rideapp.infrastructure.repository;
 
 import domen.rideapp.domain.model.Ride;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedisRideTemporaryRepository implements RideTemporaryRepository {
-    private final RedisTemplate<String, Ride> redisTemplate;
+public class RedisRideCacheRepository implements RideCacheRepository {
     private static final String HASH_KEY = "pending-rides";
+    private final RedisTemplate<String, Ride> redisTemplate;
     private final HashOperations<String, String, Ride> hashOps;
 
-    public RedisRideTemporaryRepository(RedisTemplate<String, Ride> redisTemplate) {
+    public RedisRideCacheRepository(RedisTemplate<String, Ride> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOps = redisTemplate.opsForHash();
     }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import domen.rideapp.domain.model.Ride;
+import domen.rideapp.infrastructure.mixin.RideMixin;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,19 +42,17 @@ public class RedisConfig {
     public RedisTemplate<String, Ride> rideRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Ride> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
-
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
+        mapper.addMixIn(Ride.class, RideMixin.class);
         Jackson2JsonRedisSerializer<Ride> valueSerializer =
                 new Jackson2JsonRedisSerializer<>(mapper, Ride.class);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(valueSerializer);
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(valueSerializer);
-
         template.afterPropertiesSet();
         return template;
     }

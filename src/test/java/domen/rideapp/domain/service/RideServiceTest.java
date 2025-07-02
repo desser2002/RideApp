@@ -3,7 +3,7 @@ package domen.rideapp.domain.service;
 import domen.rideapp.domain.model.*;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,7 +28,7 @@ class RideServiceTest {
     @Mock
     private DriverRepository driverRepository;
     @Mock
-    private RideTemporaryRepository rideTemporaryRepository;
+    private RideCacheRepository rideCacheRepository;
     @InjectMocks
     private RideService rideService;
 
@@ -43,7 +43,7 @@ class RideServiceTest {
         rideService.rideInitiation(customer, localization);
         //then
         ArgumentCaptor<Ride> argumentCaptor = ArgumentCaptor.forClass(Ride.class);
-        verify(rideTemporaryRepository).save(argumentCaptor.capture());
+        verify(rideCacheRepository).save(argumentCaptor.capture());
         verify(rideRepository).save(argumentCaptor.capture());
         Ride ride = argumentCaptor.getValue();
         assertEquals(customer, ride.getCustomer());
@@ -66,7 +66,7 @@ class RideServiceTest {
         Driver driver1 = spy(new Driver(UUID.randomUUID().toString(), "Jon", "Latitude", DriverStatus.AVAILABLE));
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2));
-        when(rideTemporaryRepository.getPendingRides()).thenReturn(rides);
+        when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
         ///when
         rideService.assignDriversToRides();
@@ -93,7 +93,7 @@ class RideServiceTest {
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
         Driver driver3 = spy(new Driver(UUID.randomUUID().toString(), "Yann", "Kowalski", DriverStatus.AVAILABLE));
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2, driver3));
-        when(rideTemporaryRepository.getPendingRides()).thenReturn(rides);
+        when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
         ///when
         rideService.assignDriversToRides();
@@ -121,7 +121,7 @@ class RideServiceTest {
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
         Driver driver3 = spy(new Driver(UUID.randomUUID().toString(), "Yann", "Kowalski", DriverStatus.AVAILABLE));
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2, driver3));
-        when(rideTemporaryRepository.getPendingRides()).thenReturn(rides);
+        when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
         ///when
         rideService.assignDriversToRides();
@@ -144,7 +144,7 @@ class RideServiceTest {
         Driver driver2 = spy(new Driver(UUID.randomUUID().toString(), "Bob", "Latitude", DriverStatus.AVAILABLE));
         Driver driver3 = spy(new Driver(UUID.randomUUID().toString(), "Yan", "Kowalski", DriverStatus.AVAILABLE));
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2, driver3));
-        when(rideTemporaryRepository.getPendingRides()).thenReturn(rides);
+        when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
         ///when
         rideService.assignDriversToRides();

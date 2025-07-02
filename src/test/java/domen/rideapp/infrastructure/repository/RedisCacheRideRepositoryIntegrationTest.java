@@ -1,7 +1,7 @@
 package domen.rideapp.infrastructure.repository;
 
 import domen.rideapp.domain.model.*;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@Testcontainers
-class RedisTemporaryRideRepositoryIntegrationTest {
+@Testcontainers (disabledWithoutDocker = true)
+class RedisCacheRideRepositoryIntegrationTest {
     @Container
     static GenericContainer<?> redisContainer = new GenericContainer<>("redis:7-alpine")
             .withExposedPorts(6379);
@@ -31,11 +31,11 @@ class RedisTemporaryRideRepositoryIntegrationTest {
     }
 
     @Autowired
-    private RideTemporaryRepository rideTemporaryRepository;
+    private RideCacheRepository rideCacheRepository;
 
     @BeforeEach
     void cleanRedis() {
-        rideTemporaryRepository.clear();
+        rideCacheRepository.clear();
     }
 
     @Test
@@ -47,8 +47,8 @@ class RedisTemporaryRideRepositoryIntegrationTest {
         Ride ride = new Ride("Customer1", localization, RideStatus.PENDING, new Price("12.01 PLN"));
 
         //when
-        rideTemporaryRepository.save(ride);
-        List<Ride> allRides = rideTemporaryRepository.getPendingRides();
+        rideCacheRepository.save(ride);
+        List<Ride> allRides = rideCacheRepository.getPendingRides();
 
         //then
         assertEquals(1, allRides.size());
@@ -62,11 +62,11 @@ class RedisTemporaryRideRepositoryIntegrationTest {
         GeoPoint to = new GeoPoint(51.1079, 17.0385);
         Localization localization = new Localization(from, to);
         Ride ride = new Ride("Customer1", localization, RideStatus.PENDING, new Price("12.01 PLN"));
-        rideTemporaryRepository.save(ride);
+        rideCacheRepository.save(ride);
 
         //when
-        rideTemporaryRepository.deleteBatch(List.of(ride.getId()));
-        List<Ride> allRides = rideTemporaryRepository.getPendingRides();
+        rideCacheRepository.deleteBatch(List.of(ride.getId()));
+        List<Ride> allRides = rideCacheRepository.getPendingRides();
 
         //then
         assertTrue(allRides.isEmpty());
@@ -81,13 +81,13 @@ class RedisTemporaryRideRepositoryIntegrationTest {
         Ride ride1 = new Ride("Customer1", localization, RideStatus.PENDING, new Price("12.01 PLN"));
         Ride ride2 = new Ride("Customer2", localization, RideStatus.PENDING, new Price("12.01 PLN"));
         Ride ride3 = new Ride("Customer3", localization, RideStatus.PENDING, new Price("12.01 PLN"));
-        rideTemporaryRepository.save(ride1);
-        rideTemporaryRepository.save(ride2);
-        rideTemporaryRepository.save(ride3);
+        rideCacheRepository.save(ride1);
+        rideCacheRepository.save(ride2);
+        rideCacheRepository.save(ride3);
 
         //when
-        rideTemporaryRepository.clear();
-        List<Ride> allRides = rideTemporaryRepository.getPendingRides();
+        rideCacheRepository.clear();
+        List<Ride> allRides = rideCacheRepository.getPendingRides();
 
         //then
         assertTrue(allRides.isEmpty());

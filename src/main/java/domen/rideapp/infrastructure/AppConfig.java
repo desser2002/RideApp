@@ -4,15 +4,17 @@ import domen.rideapp.domain.model.PricingConfig;
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.PricingService;
 import domen.rideapp.domain.service.RideService;
 import domen.rideapp.infrastructure.mapping.MapService;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
 import domen.rideapp.infrastructure.repository.DriverRepositoryInMemory;
-import domen.rideapp.infrastructure.repository.RedisRideTemporaryRepository;
+import domen.rideapp.infrastructure.repository.InMemoryRideCacheRepository;
+import domen.rideapp.infrastructure.repository.RedisRideCacheRepository;
 import domen.rideapp.infrastructure.repository.RideRepositoryInMemory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,8 +40,8 @@ public class AppConfig {
     RideService rideService(PricingService pricingService,
                             DriverRepository driverRepository,
                             RideRepository rideRepository,
-                            RideTemporaryRepository rideTemporaryRepository) {
-        return new RideService(pricingService, rideRepository, driverRepository, rideTemporaryRepository);
+                            RideCacheRepository rideCacheRepository) {
+        return new RideService(pricingService, rideRepository, driverRepository, rideCacheRepository);
     }
 
     @Bean
@@ -48,7 +50,14 @@ public class AppConfig {
     }
 
     @Bean
-    RedisRideTemporaryRepository redisTemporaryRideRepository(RedisTemplate<String, Ride> rideRedisTemplate) {
-        return new RedisRideTemporaryRepository(rideRedisTemplate);
+    @ConditionalOnProperty(name = "feature.redis.enabled", havingValue = "true")
+    RedisRideCacheRepository redisRideCacheRepository(RedisTemplate<String, Ride> rideRedisTemplate) {
+        return new RedisRideCacheRepository(rideRedisTemplate);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "feature.redis.enabled", havingValue = "false", matchIfMissing = true)
+    InMemoryRideCacheRepository inMemoryRideCacheRepository() {
+        return new InMemoryRideCacheRepository();
     }
 }

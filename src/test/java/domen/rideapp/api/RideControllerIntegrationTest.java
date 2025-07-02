@@ -1,7 +1,7 @@
 package domen.rideapp.api;
 
 import domen.rideapp.GoogleMapsWireMockTestConfig;
-import domen.rideapp.TemporaryRideStoreTestConfig;
+import domen.rideapp.RideCacheRepositoryTestConfig;
 import domen.rideapp.api.request.AddDriverRequest;
 import domen.rideapp.api.request.InitRideRequest;
 import domen.rideapp.api.response.RideResponse;
@@ -10,7 +10,7 @@ import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.domain.repository.RideTemporaryRepository;
+import domen.rideapp.domain.repository.RideCacheRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({GoogleMapsWireMockTestConfig.class, TemporaryRideStoreTestConfig.class})
+@Import({GoogleMapsWireMockTestConfig.class, RideCacheRepositoryTestConfig.class})
 @AutoConfigureWebTestClient
 public class RideControllerIntegrationTest {
     @Autowired
@@ -34,13 +34,13 @@ public class RideControllerIntegrationTest {
     @Autowired
     private DriverRepository driverRepository;
     @Autowired
-    private RideTemporaryRepository rideTemporaryRepository;
+    private RideCacheRepository rideCacheRepository;
 
     @BeforeEach
     void cleanUp() {
         rideRepository.clear();
         driverRepository.clear();
-        rideTemporaryRepository.clear();
+        rideCacheRepository.clear();
     }
 
     @Test
@@ -72,7 +72,7 @@ public class RideControllerIntegrationTest {
         );
         //when then
         createRide(request).expectStatus().isCreated();
-        List<Ride> rides = rideTemporaryRepository.getPendingRides();
+        List<Ride> rides = rideCacheRepository.getPendingRides();
         Assertions.assertEquals(1, rides.size());
         Assertions.assertEquals(request.customer(), rides.getFirst().getCustomer());
         Assertions.assertEquals(request.from(), rides.getFirst().getLocalization().from());
