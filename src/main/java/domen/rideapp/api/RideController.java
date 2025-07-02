@@ -24,10 +24,10 @@ public class RideController {
     }
 
     @PostMapping("/init")
-    public ResponseEntity<Void> initRide(@Valid @RequestBody InitRideRequest request) {
-        rideService.rideInitiation(request.customer(), new Localization(request.from(), request.to()));
+    public ResponseEntity<String> initRide(@Valid @RequestBody InitRideRequest request) {
+        String id = rideService.rideInitiation(request.customer(), new Localization(request.from(), request.to()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
     @GetMapping

@@ -27,6 +27,15 @@ public class Ride {
         this.price = price;
     }
 
+    public Ride(String id, String customer, Localization localization, RideStatus status, Price price, Driver driver) {
+        this.id = id != null ? id : UUID.randomUUID().toString();
+        this.customer = customer;
+        this.localization = localization;
+        this.status = status;
+        this.price = price;
+        this.driver = driver;
+    }
+
     public void setStatus(RideStatus status) {
         this.status = status;
     }
