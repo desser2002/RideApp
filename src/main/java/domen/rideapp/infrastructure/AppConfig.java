@@ -1,19 +1,22 @@
 package domen.rideapp.infrastructure;
 
+
 import domen.rideapp.domain.model.PricingConfig;
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.repository.DriverRepository;
-import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.repository.RideCacheRepository;
+import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.PricingService;
 import domen.rideapp.domain.service.RideService;
+import domen.rideapp.infrastructure.jpa.adapter.DriverRepositoryJpaAdapter;
+import domen.rideapp.infrastructure.jpa.adapter.RideRepositoryJpaAdapter;
+import domen.rideapp.infrastructure.jpa.repository.DriverRepositoryJpa;
+import domen.rideapp.infrastructure.jpa.repository.RideRepositoryJpa;
 import domen.rideapp.infrastructure.mapping.MapService;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
-import domen.rideapp.infrastructure.repository.DriverRepositoryInMemory;
-import domen.rideapp.infrastructure.repository.InMemoryRideCacheRepository;
-import domen.rideapp.infrastructure.repository.RedisRideCacheRepository;
-import domen.rideapp.infrastructure.repository.RideRepositoryInMemory;
+import domen.rideapp.infrastructure.repository.inmemory.InMemoryRideCacheRepository;
+import domen.rideapp.infrastructure.repository.inmemory.RedisRideCacheRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,13 +30,13 @@ public class AppConfig {
     }
 
     @Bean
-    DriverRepositoryInMemory driverRepository() {
-        return new DriverRepositoryInMemory();
+    DriverRepository driverRepository(DriverRepositoryJpa repositoryJpa) {
+        return new DriverRepositoryJpaAdapter(repositoryJpa);
     }
 
     @Bean
-    RideRepositoryInMemory rideRepository() {
-        return new RideRepositoryInMemory();
+    RideRepository rideRepository(RideRepositoryJpa repositoryJpa) {
+        return new RideRepositoryJpaAdapter(repositoryJpa);
     }
 
     @Bean

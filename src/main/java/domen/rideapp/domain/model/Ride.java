@@ -2,22 +2,15 @@ package domen.rideapp.domain.model;
 
 import java.util.UUID;
 
+//TODO implement builder pattern
 public class Ride {
     private final String id;
-
-    public String getId() {
-        return id;
-    }
 
     private final String customer;
     private final Localization localization;
     private RideStatus status;
     private final Price price;
     private Driver driver;
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
 
     public Ride(String customer, Localization localization, RideStatus status, Price price) {
         this.id = UUID.randomUUID().toString();
@@ -33,6 +26,14 @@ public class Ride {
         this.localization = localization;
         this.status = status;
         this.price = price;
+        this.driver = driver;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setDriver(Driver driver) {
         this.driver = driver;
     }
 

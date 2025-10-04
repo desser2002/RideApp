@@ -1,11 +1,10 @@
-package domen.rideapp.infrastructure.repository;
+package domen.rideapp.infrastructure.repository.inmemory;
 
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
 import domen.rideapp.domain.repository.RideRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RideRepositoryInMemory implements RideRepository {
     private final Map<UUID, Ride> rides = new HashMap<>();
@@ -19,7 +18,7 @@ public class RideRepositoryInMemory implements RideRepository {
     public List<Ride> getPendingRides() {
         return rides.values().stream()
                 .filter(ride -> ride.getStatus() == RideStatus.PENDING)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

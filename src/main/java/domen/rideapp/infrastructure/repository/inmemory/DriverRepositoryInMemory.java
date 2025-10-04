@@ -1,11 +1,10 @@
-package domen.rideapp.infrastructure.repository;
+package domen.rideapp.infrastructure.repository.inmemory;
 
 import domen.rideapp.domain.model.Driver;
 import domen.rideapp.domain.model.DriverStatus;
 import domen.rideapp.domain.repository.DriverRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DriverRepositoryInMemory implements DriverRepository {
     private final Map<UUID, Driver> drivers = new HashMap<>();
@@ -14,7 +13,7 @@ public class DriverRepositoryInMemory implements DriverRepository {
     public List<Driver> getAvailableDrivers() {
         return drivers.values().stream()
                 .filter(driver -> driver.status() == DriverStatus.AVAILABLE)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
