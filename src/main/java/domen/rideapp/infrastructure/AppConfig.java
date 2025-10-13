@@ -15,8 +15,10 @@ import domen.rideapp.infrastructure.jpa.repository.DriverRepositoryJpa;
 import domen.rideapp.infrastructure.jpa.repository.RideRepositoryJpa;
 import domen.rideapp.infrastructure.mapping.MapService;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
+import domen.rideapp.infrastructure.repository.inmemory.DriverRepositoryInMemory;
 import domen.rideapp.infrastructure.repository.inmemory.InMemoryRideCacheRepository;
 import domen.rideapp.infrastructure.repository.inmemory.RedisRideCacheRepository;
+import domen.rideapp.infrastructure.repository.inmemory.RideRepositoryInMemory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,15 +31,7 @@ public class AppConfig {
         return new CustomPricingService(mapService, pricingConfig);
     }
 
-    @Bean
-    DriverRepository driverRepository(DriverRepositoryJpa repositoryJpa) {
-        return new DriverRepositoryJpaAdapter(repositoryJpa);
-    }
 
-    @Bean
-    RideRepository rideRepository(RideRepositoryJpa repositoryJpa) {
-        return new RideRepositoryJpaAdapter(repositoryJpa);
-    }
 
     @Bean
     RideService rideService(PricingService pricingService,
@@ -62,5 +56,29 @@ public class AppConfig {
     @ConditionalOnProperty(name = "feature.redis.enabled", havingValue = "false", matchIfMissing = true)
     InMemoryRideCacheRepository inMemoryRideCacheRepository() {
         return new InMemoryRideCacheRepository();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "feature.h2-database.enabled", havingValue = "true")
+    DriverRepositoryJpaAdapter driverRepositoryJpaAdapter(DriverRepositoryJpa repositoryJpa) {
+        return new DriverRepositoryJpaAdapter(repositoryJpa);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "feature.h2-database.enabled", havingValue = "true")
+    RideRepositoryJpaAdapter rideRepositoryJpaAdapter(RideRepositoryJpa repositoryJpa) {
+        return new RideRepositoryJpaAdapter(repositoryJpa);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "feature.h2-database.enabled", havingValue = "false", matchIfMissing = true)
+    DriverRepositoryInMemory driverRepositoryInMemory() {
+        return new DriverRepositoryInMemory();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "feature.h2-database.enabled", havingValue = "false", matchIfMissing = true)
+    RideRepositoryInMemory rideRepositoryInMemory() {
+        return new RideRepositoryInMemory();
     }
 }

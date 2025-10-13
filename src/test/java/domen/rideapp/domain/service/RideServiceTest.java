@@ -68,7 +68,7 @@ class RideServiceTest {
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2));
         when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
-        ///when
+        //when
         rideService.assignDriversToRides();
         //then
         verify(ride1).setStatus(RideStatus.FOUND);
@@ -95,7 +95,7 @@ class RideServiceTest {
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2, driver3));
         when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
-        ///when
+        //when
         rideService.assignDriversToRides();
         //then
         verify(ride1).setStatus(RideStatus.FOUND);
@@ -123,7 +123,7 @@ class RideServiceTest {
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2, driver3));
         when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
-        ///when
+        //when
         rideService.assignDriversToRides();
         //then
         verify(ride1).setStatus(RideStatus.FOUND);
@@ -146,7 +146,7 @@ class RideServiceTest {
         List<Driver> drivers = new ArrayList<>(List.of(driver1, driver2, driver3));
         when(rideCacheRepository.getPendingRides()).thenReturn(rides);
         when(driverRepository.getAvailableDrivers()).thenReturn(drivers);
-        ///when
+        //when
         rideService.assignDriversToRides();
         //then
         verify(driver1, never()).copyWith(DriverStatus.IN_RIDE);
