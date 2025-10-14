@@ -9,10 +9,6 @@ import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.PricingService;
 import domen.rideapp.domain.service.RideService;
-import domen.rideapp.infrastructure.jpa.adapter.DriverRepositoryJpaAdapter;
-import domen.rideapp.infrastructure.jpa.adapter.RideRepositoryJpaAdapter;
-import domen.rideapp.infrastructure.jpa.repository.DriverRepositoryJpa;
-import domen.rideapp.infrastructure.jpa.repository.RideRepositoryJpa;
 import domen.rideapp.infrastructure.mapping.MapService;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
 import domen.rideapp.infrastructure.repository.inmemory.InMemoryRideCacheRepository;
@@ -27,16 +23,6 @@ public class AppConfig {
     @Bean
     PricingService pricingService(MapService mapService, PricingConfig pricingConfig) {
         return new CustomPricingService(mapService, pricingConfig);
-    }
-
-    @Bean
-    DriverRepository driverRepository(DriverRepositoryJpa repositoryJpa) {
-        return new DriverRepositoryJpaAdapter(repositoryJpa);
-    }
-
-    @Bean
-    RideRepository rideRepository(RideRepositoryJpa repositoryJpa) {
-        return new RideRepositoryJpaAdapter(repositoryJpa);
     }
 
     @Bean
