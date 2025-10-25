@@ -11,7 +11,7 @@ public interface RideCacheRepository {
 
     void deleteBatch(List<String> assignedRides);
 
-    void delete(String assignedRideId);
-
     void clear();
+
+    void saveBatch(List<Ride> rides);
 }
