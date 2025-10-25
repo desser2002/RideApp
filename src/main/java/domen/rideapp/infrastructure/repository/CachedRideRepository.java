@@ -2,15 +2,16 @@ package domen.rideapp.infrastructure.repository;
 
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.repository.RideCacheRepository;
+import domen.rideapp.domain.repository.RideDatabaseRepository;
 import domen.rideapp.domain.repository.RideRepository;
 
 import java.util.List;
 
 public class CachedRideRepository implements RideRepository {
-    private final RideRepository database;
+    private final RideDatabaseRepository database;
     private final RideCacheRepository cache;
 
-    public CachedRideRepository(RideRepository database, RideCacheRepository cache) {
+    public CachedRideRepository(RideDatabaseRepository database, RideCacheRepository cache) {
         this.database = database;
         this.cache = cache;
     }

@@ -2,13 +2,13 @@ package domen.rideapp.infrastructure.jpa.adapter;
 
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
-import domen.rideapp.domain.repository.RideRepository;
+import domen.rideapp.domain.repository.RideDatabaseRepository;
 import domen.rideapp.infrastructure.jpa.mapper.RideMapper;
 import domen.rideapp.infrastructure.jpa.repository.RideRepositoryJpa;
 
 import java.util.List;
 
-public class RideRepositoryJpaAdapter implements RideRepository {
+public class RideRepositoryJpaAdapter implements RideDatabaseRepository {
     private final RideRepositoryJpa repository;
 
     public RideRepositoryJpaAdapter(RideRepositoryJpa repository) {

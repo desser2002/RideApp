@@ -5,6 +5,7 @@ import domen.rideapp.domain.model.PricingConfig;
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideCacheRepository;
+import domen.rideapp.domain.repository.RideDatabaseRepository;
 import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.PricingService;
@@ -30,9 +31,9 @@ public class AppConfig {
     @Bean
     @Primary
     CachedRideRepository cachedRideRepository(
-            RideRepository rideRepository,
+            RideDatabaseRepository rideDatabaseRepository,
             RideCacheRepository rideCacheRepository) {
-        return new CachedRideRepository(rideRepository, rideCacheRepository);
+        return new CachedRideRepository(rideDatabaseRepository, rideCacheRepository);
     }
 
     @Bean
