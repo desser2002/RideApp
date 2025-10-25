@@ -12,4 +12,7 @@ public interface RideRepository {
     List<Ride> getAllRides();
 
     void clear();
+
+    default void invalidateCacheBatch(List<String> rideIds) {
+    }
 }

@@ -3,7 +3,6 @@ package domen.rideapp.domain.service;
 import domen.rideapp.domain.model.*;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.infrastructure.repository.CachedRideRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +44,11 @@ public class RideService {
             ride.setDriver(driver);
             rideRepository.save(ride);
 
-            if (rideRepository instanceof CachedRideRepository cachedRepo) {
-                cachedRepo.invalidateCacheBatch(
-                        ridesToAssign.stream().map(Ride::getId).toList()
-                );
-            }
+
+            rideRepository.invalidateCacheBatch(
+                    ridesToAssign.stream().map(Ride::getId).toList()
+            );
+
         }
         return numberOfRidesToFound;
     }
