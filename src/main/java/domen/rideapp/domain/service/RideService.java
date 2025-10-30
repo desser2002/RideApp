@@ -3,7 +3,6 @@ package domen.rideapp.domain.service;
 import domen.rideapp.domain.model.*;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideRepository;
-import domen.rideapp.domain.repository.RideCacheRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +11,12 @@ public class RideService {
     private final PricingService pricingService;
     private final RideRepository rideRepository;
     private final DriverRepository driverRepository;
-    private final RideCacheRepository rideCacheRepository;
 
     public RideService(PricingService pricingService,
-                       RideRepository rideRepository, DriverRepository driverRepository,
-                       RideCacheRepository rideCacheRepository) {
+                       RideRepository rideRepository, DriverRepository driverRepository) {
         this.pricingService = pricingService;
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
-        this.rideCacheRepository = rideCacheRepository;
     }
 
     public List<Ride> getAllRides() {
@@ -30,13 +26,12 @@ public class RideService {
     public String rideInitiation(String customer, Localization localization) {
         Price cost = pricingService.getCost(localization);
         Ride ride = new Ride(customer, localization, RideStatus.PENDING, cost);
-        rideCacheRepository.save(ride);
         rideRepository.save(ride);
         return ride.getId();
     }
 
     public int assignDriversToRides() {
-        List<Ride> pendingRides = rideCacheRepository.getPendingRides();
+        List<Ride> pendingRides = rideRepository.getPendingRides();
         List<Driver> availableDrivers = driverRepository.getAvailableDrivers();
         int numberOfRidesToFound = Math.min(pendingRides.size(), availableDrivers.size());
         List<Ride> ridesToAssign = pendingRides.subList(0, numberOfRidesToFound);
@@ -48,7 +43,12 @@ public class RideService {
             driverRepository.save(driver);
             ride.setDriver(driver);
             rideRepository.save(ride);
-            rideCacheRepository.delete(ride.getId());
+
+
+            rideRepository.invalidateCacheBatch(
+                    ridesToAssign.stream().map(Ride::getId).toList()
+            );
+
         }
         return numberOfRidesToFound;
     }

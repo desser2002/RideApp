@@ -4,7 +4,7 @@ import domen.rideapp.domain.model.Ride;
 
 import java.util.List;
 
-public interface RideRepository {
+public interface RideDatabaseRepository {
     void save(Ride ride);
 
     List<Ride> getPendingRides();
@@ -12,6 +12,4 @@ public interface RideRepository {
     List<Ride> getAllRides();
 
     void clear();
-
-    void invalidateCacheBatch(List<String> rideIds);
 }

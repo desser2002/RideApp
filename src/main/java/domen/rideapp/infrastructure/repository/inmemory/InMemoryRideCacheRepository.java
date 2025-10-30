@@ -32,12 +32,15 @@ public class InMemoryRideCacheRepository implements RideCacheRepository {
     }
 
     @Override
-    public void delete(String assignedRideId) {
-        rides.remove(assignedRideId);
+    public void clear() {
+        rides.clear();
     }
 
     @Override
-    public void clear() {
-        rides.clear();
+    public void saveBatch(List<Ride> rides) {
+        if (rides == null || rides.isEmpty()) {
+            return;
+        }
+        rides.forEach(ride -> this.rides.put(ride.getId(), ride));
     }
 }

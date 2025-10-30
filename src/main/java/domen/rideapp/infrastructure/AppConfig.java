@@ -5,17 +5,20 @@ import domen.rideapp.domain.model.PricingConfig;
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.repository.DriverRepository;
 import domen.rideapp.domain.repository.RideCacheRepository;
+import domen.rideapp.domain.repository.RideDatabaseRepository;
 import domen.rideapp.domain.repository.RideRepository;
 import domen.rideapp.domain.service.DriverService;
 import domen.rideapp.domain.service.PricingService;
 import domen.rideapp.domain.service.RideService;
 import domen.rideapp.infrastructure.mapping.MapService;
 import domen.rideapp.infrastructure.pricing.CustomPricingService;
+import domen.rideapp.infrastructure.repository.CachedRideRepository;
 import domen.rideapp.infrastructure.repository.inmemory.InMemoryRideCacheRepository;
 import domen.rideapp.infrastructure.repository.inmemory.RedisRideCacheRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
@@ -26,11 +29,18 @@ public class AppConfig {
     }
 
     @Bean
+    @Primary
+    CachedRideRepository cachedRideRepository(
+            RideDatabaseRepository rideDatabaseRepository,
+            RideCacheRepository rideCacheRepository) {
+        return new CachedRideRepository(rideDatabaseRepository, rideCacheRepository);
+    }
+
+    @Bean
     RideService rideService(PricingService pricingService,
                             DriverRepository driverRepository,
-                            RideRepository rideRepository,
-                            RideCacheRepository rideCacheRepository) {
-        return new RideService(pricingService, rideRepository, driverRepository, rideCacheRepository);
+                            RideRepository rideRepository) {
+        return new RideService(pricingService, rideRepository, driverRepository);
     }
 
     @Bean

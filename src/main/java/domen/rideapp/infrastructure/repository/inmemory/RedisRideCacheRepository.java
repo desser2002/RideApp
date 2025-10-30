@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RedisRideCacheRepository implements RideCacheRepository {
     private static final String HASH_KEY = "pending-rides";
@@ -34,12 +36,17 @@ public class RedisRideCacheRepository implements RideCacheRepository {
     }
 
     @Override
-    public void delete(String assignedRideId) {
-        hashOps.delete(HASH_KEY, assignedRideId);
+    public void clear() {
+        redisTemplate.delete(HASH_KEY);
     }
 
     @Override
-    public void clear() {
-        redisTemplate.delete(HASH_KEY);
+    public void saveBatch(List<Ride> rides) {
+        if (rides == null || rides.isEmpty()) {
+            return;
+        }
+        Map<String, Ride> idsToRides = rides.stream()
+                .collect(Collectors.toMap(Ride::getId, ride -> ride));
+        hashOps.putAll(HASH_KEY, idsToRides);
     }
 }

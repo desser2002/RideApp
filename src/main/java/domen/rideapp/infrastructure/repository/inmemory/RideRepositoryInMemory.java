@@ -2,11 +2,11 @@ package domen.rideapp.infrastructure.repository.inmemory;
 
 import domen.rideapp.domain.model.Ride;
 import domen.rideapp.domain.model.RideStatus;
-import domen.rideapp.domain.repository.RideRepository;
+import domen.rideapp.domain.repository.RideDatabaseRepository;
 
 import java.util.*;
 
-public class RideRepositoryInMemory implements RideRepository {
+public class RideRepositoryInMemory implements RideDatabaseRepository {
     private final Map<UUID, Ride> rides = new HashMap<>();
 
     @Override
